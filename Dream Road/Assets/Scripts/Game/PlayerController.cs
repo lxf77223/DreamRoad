@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
     private void OnDestroy()
     {
         EventCenter.RemoveListener<int>(EventDefine.ChangeSkin, ChangeSkin);
+        EventCenter.RemoveListener<bool>(EventDefine.IsMusicOn, IsMusicOn);
     }
     /// <summary>
     /// 音效是否开启
@@ -53,16 +54,16 @@ public class PlayerController : MonoBehaviour
     {
         spriteRenderer.sprite = vars.CharacterSpriteList[skinIndex];
     }
-    private bool IsPointerOverGameObject(Vector2 mousePostion)
-    {
-        //创建一个点击事件
-        PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = mousePostion;
-        List<RaycastResult> raycastResults = new List<RaycastResult>();
-        //向点击位置发射一条射线，检测是否点击UI
-        EventSystem.current.RaycastAll(eventData, raycastResults);
-        return raycastResults.Count > 0;
-    }
+    //private bool IsPointerOverGameObject(Vector2 mousePostion)
+    //{
+    //    //创建一个点击事件
+    //    PointerEventData eventData = new PointerEventData(EventSystem.current);
+    //    eventData.position = mousePostion;
+    //    List<RaycastResult> raycastResults = new List<RaycastResult>();
+    //    //向点击位置发射一条射线，检测是否点击UI
+    //    EventSystem.current.RaycastAll(eventData, raycastResults);
+    //    return raycastResults.Count > 0;
+    //}
     private void Update()
     {
         Debug.DrawRay(rayDown.position, Vector2.down * 1,Color.red);
@@ -70,18 +71,18 @@ public class PlayerController : MonoBehaviour
         Debug.DrawRay(rayRight.position, Vector2.right * 0.15f, Color.red);
 
         //当运行平台为安卓和ios时
-        //if (Application.platform==RuntimePlatform.Android||
-        //    Application.platform == RuntimePlatform.IPhonePlayer)
-        //{
-        //    int fingerId = Input.GetTouch(0).fingerId;
-        //    //EventSystem.current.IsPointerOverGameObject 是否碰到UI
-        //    if (EventSystem.current.IsPointerOverGameObject(fingerId)) return;
-        //}
-        //else
-        //{
-        //    if (EventSystem.current.IsPointerOverGameObject()) return;
-        //}
-        if (IsPointerOverGameObject(Input.mousePosition)) return;
+        if (Application.platform == RuntimePlatform.Android ||
+            Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            int fingerId = Input.GetTouch(0).fingerId;
+            //EventSystem.current.IsPointerOverGameObject 是否碰到UI
+            if (EventSystem.current.IsPointerOverGameObject(fingerId)) return;
+        }
+        else
+        {
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+        }
+        //if (IsPointerOverGameObject(Input.mousePosition)) return;
 
         //角色不在跳跃状态下才能点击鼠标
         if (GameManager.Instance.IsGameStarted == false || GameManager.Instance.IsGameOver == true||GameManager.Instance.IsPause == true)

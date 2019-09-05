@@ -16,6 +16,7 @@ public class ClickAudio : MonoBehaviour
     private void OnDestroy()
     {
         EventCenter.RemoveListener(EventDefine.playClickAudio, PlayAudio);
+        EventCenter.RemoveListener<bool>(EventDefine.IsMusicOn, IsMusicOn);
     }
     private void PlayAudio()
     {
